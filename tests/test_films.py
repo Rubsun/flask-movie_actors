@@ -1,7 +1,6 @@
 """Unit tests for film-related operations in the Flask application."""
 
 import unittest
-from uuid import uuid4
 
 from app import create_app, db
 from model import Actor, Film, FilmActor
@@ -94,7 +93,9 @@ class FilmsTestCase(unittest.TestCase):
         db.session.add(film_actor)
         db.session.commit()
 
-        response = self.client.post(f'/films/delete/{film.id}/{actor.id}')
+        response = self.client.post(
+            f'/films/delete/{film.id}/{actor.id}',
+        )
         self.assertEqual(response.status_code, 302)
 
         film_actor = db.session.query(FilmActor).filter_by(

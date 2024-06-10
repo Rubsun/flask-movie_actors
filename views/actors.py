@@ -1,14 +1,15 @@
 """
 Module for handling actor and film-related operations using Flask and SQLAlchemy.
+
 This module defines routes and functions within Flask Blueprints for managing actors and films
 in a database. It includes functionality for adding, updating, deleting, and displaying details
 of actors and films.
 """
 
 from flask import Blueprint, redirect, render_template, request, url_for
+from flask_wtf.csrf import CSRFProtect
 from sqlalchemy import Integer, cast, delete, select, update
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
-from flask_wtf.csrf import CSRFProtect
 
 from model import Actor, FilmActor, db
 
@@ -16,6 +17,7 @@ actors_app = Blueprint('actors_app', __name__)
 csrf = CSRFProtect()
 
 GET = 'GET'
+
 
 @actors_app.get('/', endpoint='list')
 def get_actors():
@@ -28,10 +30,12 @@ def get_actors():
     actors = db.session.scalars(select(Actor))
     return render_template('actors/index.html', actors=actors)
 
+
 @actors_app.get('/actor', endpoint='detail')
 def detail():
     """
     Display detailed information about a specific actor based on the provided parameters.
+
     Retrieves actor details from the database based on the provided first name, last name, and age
     parameters. If any of these parameters are missing, it returns a 400 error with a message.
     If the actor is not found in the database, it raises a NotFound error.
@@ -65,10 +69,12 @@ def detail():
         'actors/detail.html', first_name=first_name, actor=actor, films=films,
     )
 
+
 @actors_app.route('/add/', methods=[GET, 'POST'], endpoint='add')
 def add_actor():
     """
     Add a new actor to the database.
+
     If the request method is GET, renders the 'actors/add.html' template to display a form
     for adding a new actor. If the method is POST, processes the form data to create a new
     actor in the database.
@@ -100,10 +106,12 @@ def add_actor():
         ),
     )
 
+
 @actors_app.route('/update/<uuid:actor_id>', methods=['GET', 'POST'], endpoint='update')
 def update_actor(actor_id):
     """
     Update information for an existing actor in the database.
+
     If the request method is GET, renders the 'actors/update.html' template to display a form
     for updating actor details. If the method is POST, processes the form data to update the
     specified actor's information in the database.
@@ -146,17 +154,23 @@ def update_actor(actor_id):
     )
 
     db.session.execute(
-        update(Actor).where(Actor.id == actor_id).values(
-            first_name=first_name, last_name=last_name, age=new_age),
+        update(Actor).where(Actor.id == actor_id).values
+        (
+            first_name=first_name,
+            last_name=last_name,
+            age=new_age,
+        ),
     )
     db.session.commit()
     return redirect(url_detail)
+
 
 @actors_app.route('/delete/<uuid:actor_id>', methods=[GET, 'POST'], endpoint='delete')
 @csrf.exempt
 def delete_actor(actor_id):
     """
     Delete an existing actor from the database along with associated films.
+
     If the request method is GET, renders the 'actors/delete.html' template to display a form
     for confirming the deletion of an actor. If the method is POST, processes the form data to
     delete the specified actor from the database and any associated films if they have no other

@@ -1,5 +1,6 @@
 """
 This module defines routes and functions for managing films in a Flask web application.
+
 It includes routes for listing films, viewing film details, adding films, updating films,
 and deleting films.
 """
@@ -16,6 +17,7 @@ films_app = Blueprint('films_app', __name__)
 
 GET = 'GET'
 
+
 @films_app.get('/', endpoint='list')
 def get_films():
     """
@@ -27,10 +29,12 @@ def get_films():
     films = db.session.scalars(select(Film))
     return render_template('films/index.html', films=films)
 
+
 @films_app.get('/detail', endpoint='detail')
 def detail():
     """
     Display detailed information about a specific film based on the provided title and year.
+
     Retrieves film details from the database and renders them along with associated actors on
     the 'films/detail.html' template.
 
@@ -46,16 +50,18 @@ def detail():
         select(Film).where(Film.title == title, Film.year == year),
     )
     if not film:
-        raise NotFound(f'Film with title: {title} not found!')
+        raise NotFound(f'Film with title: {title} not found!!!')
 
     movie_data = get_rating_movie(title)
     actors = [film_actor.actor for film_actor in film.people]
     return render_template('films/detail.html', film=film, actors=actors, movie_data=movie_data)
 
+
 @films_app.route('/add/', methods=[GET, 'POST'], endpoint='add')
 def add_film():
     """
     Add a new film to the database.
+
     If the request method is GET, renders the 'films/add.html' template to display a form
     for adding a new film. If the method is POST, processes the form data to create a new film
     and associate it with an existing actor in the database.
@@ -65,6 +71,7 @@ def add_film():
 
     Raises:
         NotFound: If the specified actor is not found in the database.
+        Conflict: If the allready exists.
     """
     if request.method == GET:
         return render_template('films/add.html')
@@ -84,10 +91,11 @@ def add_film():
         ),
     )
     if not actor:
-        raise NotFound(f'Actor with name "{first_name}" not found!')
+        raise NotFound(f'Actor with name "{first_name}" not found')
 
     films = [film_actor.film for film_actor in actor.films]
-    if title in [film.title for film in films]:
+    titles = [film.title for film in films]
+    if title in titles:
         raise Conflict(
             f'This actor has already a film "{title}" in {year}!',
         )
@@ -114,13 +122,16 @@ def add_film():
         ),
     )
 
+
 @films_app.route('/update/<uuid:film_id>', methods=['GET', 'POST'], endpoint='update')
 def update_film(film_id):
     """
     Update information for an existing film in the database.
+
     If the request method is GET, renders the 'films/update.html' template to display a form
     for updating film details. If the method is POST, processes the form data to update the
     specified film's information in the database.
+
     Args:
         film_id (UUID): The ID of the film to update.
 
@@ -154,8 +165,12 @@ def update_film(film_id):
         )
 
     db.session.execute(
-        update(Film).where(Film.id == film_id).values(
-            title=title, description=description, year=year),
+        update(Film).where(Film.id == film_id).values
+        (
+            title=title,
+            description=description,
+            year=year,
+        ),
     )
     db.session.commit()
 
@@ -164,6 +179,7 @@ def update_film(film_id):
             'films_app.detail', title=title, year=year,
         ),
     )
+
 
 @films_app.route('/delete/<uuid:film_id>', methods=[GET, 'POST'], endpoint='delete')
 def delete_film(film_id):
@@ -191,6 +207,7 @@ def delete_film(film_id):
 
     return redirect(url_for('films_app.list'))
 
+
 @films_app.post('/delete/<uuid:film_id>/<uuid:actor_id>', endpoint='delete_film_by_actor')
 def delete_film_by_actor(film_id, actor_id):
     """
@@ -211,7 +228,7 @@ def delete_film_by_actor(film_id, actor_id):
         raise NotFound(f'Actor with id "{actor_id}" not found!')
 
     film_actor = db.session.scalar(
-        select(FilmActor).where(FilmActor.film_id == film_id, FilmActor.actor_id == actor_id)
+        select(FilmActor).where(FilmActor.film_id == film_id, FilmActor.actor_id == actor_id),
     )
     if not film_actor:
         raise NotFound(f'Film with id "{film_id}" not found for actor with id "{actor_id}"!')
@@ -220,5 +237,10 @@ def delete_film_by_actor(film_id, actor_id):
     db.session.commit()
 
     return redirect(
-        url_for('actors_app.detail', first_name=actor.first_name, last_name=actor.last_name, age=actor.age),
+        url_for(
+            'actors_app.detail',
+            first_name=actor.first_name,
+            last_name=actor.last_name,
+            age=actor.age,
+        ),
     )
