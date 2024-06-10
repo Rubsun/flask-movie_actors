@@ -1,0 +1,12 @@
+Flask
+Flask-SQLAlchemy
+psycopg2-binary
+SQLAlchemy
+requests
+python-dotenv
+werkzeug
+Flask-Migrate
+psycopg
+importlib_metadata==4.13.0
+WTForms==3.1.2
+Flask-WTF==1.2.1

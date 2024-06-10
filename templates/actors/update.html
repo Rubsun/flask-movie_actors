@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Update Actor
+{% endblock %}
+
+{% block body %}
+    <h1>Update Actor</h1>
+    <form method="post" action="{{ url_for('actors_app.update', actor_id=actor.id) }}">
+        <label for="id-actor-new-first-name">New First Name</label>
+        <input id="id-actor-new-first-name" name="actor-new-first-name" type="text" maxlength="49" value="{{ actor.first_name }}" required>
+        <label for="id-new-actor-last-name">New Last Name</label>
+        <input id="id-new-actor-last-name" name="new-actor-last-name" type="text" maxlength="49" value="{{ actor.last_name }}" required>
+        <label for="id-new-actor-age">New Age</label>
+        <input id="id-new-actor-age" name="new-actor-age" type="number" min="0" value="{{ actor.age }}" required>
+        <button type="submit">Update Actor</button>
+    </form>
+    <div>
+        <a href="{{ url_for('actors_app.detail', first_name=actor.first_name, last_name=actor.last_name, age=actor.age) }}">Back to Actor Details</a>
+    </div>
+{% endblock %}

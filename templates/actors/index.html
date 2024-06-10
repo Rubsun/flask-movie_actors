@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Actors List
+{% endblock %}
+{% block body %}
+<h1>Actors List:</h1>
+<div>
+    <ul>
+        {% for actor in actors %}
+        <li>
+            <a href="{{ url_for('actors_app.detail', first_name=actor.first_name, last_name=actor.last_name,
+                    age=actor.age) }}">
+                {{ actor.first_name }} {{ actor.last_name }} {{ actor.age }}
+            </a>
+        </li>
+        <a href="{{ url_for('actors_app.update', actor_id=actor.id ) }}">
+            Update Actor
+        </a>
+        <br>
+        <a href="{{ url_for('actors_app.delete', actor_id=actor.id ) }}">
+            Delete Actor
+        </a>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <a href="{{ url_for('actors_app.add') }}">
+        Add new Actor
+    </a>
+
+
+    <br>
+    <a href="{{ url_for('films_app.list') }}">Movie list</a>
+</div>
+{% endblock %}

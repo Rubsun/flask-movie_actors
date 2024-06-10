@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Actor Details
+{% endblock %}
+
+{% block body %}
+    <h1>Actor: {{ actor.first_name }} {{ actor.last_name }}</h1>
+    <p>Age: {{ actor.age }}</p>
+
+    <h2>Films</h2>
+    <ul>
+        {% for film in films %}
+            <li>
+                {{ film.title }} ({{ film.year }})
+                <a href="{{ url_for('films_app.update', film_id=film.id) }}">Update</a>
+                <form method="post" action="{{ url_for('films_app.delete_film_by_actor', film_id=film.id, actor_id=actor.id) }}" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Add Film for Actor</h2>
+    <form method="post" action="{{ url_for('films_app.add') }}">
+        <input type="hidden" name="actor-first-name" value="{{ actor.first_name }}">
+        <input type="hidden" name="actor-last-name" value="{{ actor.last_name }}">
+        <input type="hidden" name="actor-age" value="{{ actor.age }}">
+        <label for="id-film-title">Title</label>
+        <input id="id-film-title" name="film-title" type="text" maxlength="19" required>
+        <label for="id-film-description">Description</label>
+        <input id="id-film-description" name="film-description" type="text" maxlength="499" required>
+        <label for="id-film-year">Year</label>
+        <input id="id-film-year" name="film-year" type="number" max="2029" min="1901" required>
+        <button type="submit">Add Film</button>
+    </form>
+
+    <div>
+        <a href="{{ url_for('actors_app.update', actor_id=actor.id) }}">Update Actor</a>
+        <form method="post" action="{{ url_for('actors_app.delete', actor_id=actor.id) }}" style="display:inline;">
+            <button type="submit">Delete Actor</button>
+        </form>
+    </div>
+    <div>
+        <a href="{{ url_for('actors_app.list') }}">Back to Actor List</a>
+    </div>
+{% endblock %}

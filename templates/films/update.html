@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Update Film
+{% endblock %}
+
+{% block body %}
+    <h1>Update Film</h1>
+    <form method="post" action="{{ url_for('films_app.update', film_id=film.id) }}">
+        <label for="id-new-film-title">New Title</label>
+        <input id="id-new-film-title" name="new-film-title" type="text" maxlength="19" value="{{ film.title }}" required>
+        <label for="id-new-film-description">New Description</label>
+        <input id="id-new-film-description" name="new-film-description" type="text" maxlength="499" value="{{ film.description }}" required>
+        <label for="id-new-film-year">New Year</label>
+        <input id="id-new-film-year" name="new-film-year" type="number" max="2029" min="1901" value="{{ film.year }}" required>
+        <button type="submit">Update Film</button>
+    </form>
+    <div>
+        <a href="{{ url_for('films_app.detail', title=film.title, year=film.year) }}">Back to Film Details</a>
+    </div>
+{% endblock %}

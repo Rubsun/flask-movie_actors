@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Add Actor
+{% endblock %}
+
+{% block body %}
+    <h1>Create new actor</h1>
+
+    <div>
+        <form method="post">
+            <label for="id-actor-first-name">
+                  First Name
+            </label>
+            <input
+                id="id-actor-first-name"
+                name="actor-first-name"
+                type="text"
+                maxlength="19"
+                required
+            >
+            <label for="id-actor-last-name">
+                  Last Name
+            </label>
+            <input
+                id="id-actor-last-name"
+                name="actor-last-name"
+                type="text"
+                maxlength="24"
+                required
+            >
+            <label for="id-age">
+                  Age
+            </label>
+            <input
+                id="id-age"
+                name="actor-age"
+                type="number"
+                min="1"
+                max="100"
+                required
+            >
+            <button type="submit">Create</button>
+        </form>
+    </div>
+    <div>
+        <a href="{{ url_for('actors_app.list') }}">
+            Back to Actor list
+        </a>
+    </div>
+{% endblock %}
+
